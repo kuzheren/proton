@@ -101,6 +101,23 @@ namespace Proton
 
             return null;
         }
+        public static Player GetPlayerByNickname(string playerNickname)
+        {
+            if (CurrentRoom == null)
+            {
+                return null;
+            }
+
+            foreach (Player player in CurrentRoom.PlayersList)
+            {
+                if (player.NickName == playerNickname)
+                {
+                    return player;
+                }
+            }
+
+            return null;
+        }
         public static GameObject GetGameObjectByID(uint gameObjectID)
         {
             if (CurrentRoom == null)
