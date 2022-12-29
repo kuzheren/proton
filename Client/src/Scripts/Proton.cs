@@ -101,6 +101,22 @@ namespace Proton
 
             return null;
         }
+        public static GameObject GetGameObjectByID(uint gameObjectID)
+        {
+            if (CurrentRoom == null)
+            {
+                Debug.LogError("Для поиска объекта нужно зайти в комнату!");
+            }
+
+            if (CurrentRoom.GameobjectPool.ContainsKey(gameObjectID))
+            {
+                return CurrentRoom.GameobjectPool[gameObjectID];
+            }
+            else
+            {
+                return null;
+            }
+        }
         public static uint AllocateGameobjectID()
         {
             return (uint) Random.Range((uint) 0x00000000, (uint) 0xFFFFFFFF);
