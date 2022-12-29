@@ -44,7 +44,7 @@
 ###### OnChatMessage(string message) - вызывается при получении сообщения из чата
 ###### OnKicked(bool timeout) - вызывается при кике из комнаты
 ###### OnServerError(uint errorCode, string errorText) - вызывается при серверной ошибке
-###### ###### OnTeleportGameObject(GameObject teleportedObject, Vector3 position)
+###### OnTeleportGameObject(GameObject teleportedObject, Vector3 position)
 
 ### Поля ProtonEngine:
 ###### string NickName - никнейм игрока (readonly)
