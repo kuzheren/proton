@@ -59,6 +59,15 @@ namespace Proton.Packet.Handler
                 joinedRoom.Init(roomInfo);
                 ProtonEngine.CurrentRoom = joinedRoom;
                 ProtonEngine.CurrentRoom.AddOrUpdatePlayer(ProtonEngine.LocalPlayer);
+                foreach (Player cachedPlayer in ProtonEngine.CachedRoomPlayers)
+                {
+                    if (cachedPlayer.IsHost)
+                    {
+                        ProtonEngine.CurrentRoom.Host = cachedPlayer;
+                    }
+                    ProtonEngine.CurrentRoom.AddOrUpdatePlayer(cachedPlayer);
+                }
+                ProtonEngine.CachedRoomPlayers = new List<Player>();
                 ProtonEngine.InvokeCallback("OnJoinRoom", new object[] {joinedRoom.MapName});
             }
             else if (packetID == ProtonPacketID.PACKET_CREATE_PLAYER_CLASS)
@@ -67,25 +76,46 @@ namespace Proton.Packet.Handler
                 bool isLocal = ps.ReadBool();
                 
                 Player newPlayer = (Player) ConvertBitStreamToStruct(ps, typeof(Player));
+
                 if (isLocal == true)
                 {
                     ProtonEngine.LocalPlayer = newPlayer;
                 }
-                if (isPlayerListInitialization == false && newPlayer != ProtonEngine.LocalPlayer)
+                else
                 {
-                    ProtonEngine.InvokeCallback("OnPlayerJoined", new object[] {newPlayer});
+                    if (ProtonEngine.CurrentRoom == null)
+                    {
+                        ProtonEngine.CachedRoomPlayers.Add(newPlayer);
+                    }
+                    else
+                    {
+                        ProtonEngine.CurrentRoom.AddOrUpdatePlayer(newPlayer);
+                        if (isPlayerListInitialization == false && newPlayer != ProtonEngine.LocalPlayer)
+                        {
+                            ProtonEngine.InvokeCallback("OnPlayerJoined", new object[] {newPlayer});
+                        }
+                    }
                 }
 
-                if (ProtonEngine.CurrentRoom != null)
-                {
-                    ProtonEngine.CurrentRoom.AddOrUpdatePlayer(newPlayer);
-                }
+                //if (newPlayer.IsHost)
+                //{
+                //    ProtonEngine.CurrentRoom.Host = newPlayer;
+                //}
+                //if (isPlayerListInitialization == false && newPlayer != ProtonEngine.LocalPlayer)
+                //{
+                //    ProtonEngine.InvokeCallback("OnPlayerJoined", new object[] {newPlayer});
+                //}
+                //if (ProtonEngine.CurrentRoom != null)
+                //{
+                //    ProtonEngine.CurrentRoom.AddOrUpdatePlayer(newPlayer);
+                //}
             }
             else if (packetID == ProtonPacketID.PACKET_REMOVE_PLAYER_CLASS)
             {
                 uint removedPlayerID = ps.ReadUInt32();
-                ProtonEngine.InvokeCallback("OnPlayerLeaved", new object[] {ProtonEngine.GetPlayerByID(removedPlayerID)});
+                Player quitedPlayer = ProtonEngine.GetPlayerByID(removedPlayerID);
                 ProtonEngine.CurrentRoom.RemovePlayer(removedPlayerID);
+                ProtonEngine.InvokeCallback("OnPlayerLeaved", new object[] {quitedPlayer});
             }
             else if (packetID == ProtonPacketID.PACKET_HOST_CHANGED)
             {
@@ -494,6 +524,12 @@ namespace Proton.Packet.Handler
             for (int i = 2; i < values.Length; i++)
             {
                 object value = values[i];
+
+                if (value == null)
+                {
+                    Debug.LogError("Предотвращена попытка отправки RPC с null аргументом! Функция: " + RPCName + ". Индекс аргумента: " + (i - 1));
+                    return;
+                }
 
                 if (value.GetType() == typeof(byte))
                 {

@@ -48,7 +48,10 @@ namespace Proton.Network
             ProtonGlobalStates.XorEncryptionKey = 0;
             ProtonGlobalStates.ConnectionEncrypted = false;
 
-            ProtonPeer.Close();
+            if (ProtonPeer != null)
+            {
+                ProtonPeer.Close();
+            }
         }
         public static void SendQueuedData() // unused
         {

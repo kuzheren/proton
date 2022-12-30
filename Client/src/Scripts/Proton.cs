@@ -18,6 +18,7 @@ namespace Proton
         public static List<object> CallbacksTargets = new List<object>();
         public static List<object[]> CallbacksStack = new List<object[]>();
         public static Room CurrentRoom;
+        public static List<Player> CachedRoomPlayers = new List<Player>();
         public static Player LocalPlayer;
         public static Vector3 LocalCameraPosition;
         public static float StreamZone;
@@ -30,6 +31,7 @@ namespace Proton
             {
                 ProtonHandlerPrefab = Resources.Load("ProtonHandler", typeof(GameObject)) as GameObject;
                 ProtonHandlerObject = GameObject.Instantiate(ProtonHandlerPrefab);
+                ProtonEngine.NickName = nickname;
                 ProtonNetwork.Connect(IP, port, nickname);
             }
             else
@@ -105,6 +107,7 @@ namespace Proton
         {
             if (CurrentRoom == null)
             {
+                Debug.LogError("Для поиска игрока нужно зайти в комнату!");
                 return null;
             }
 
@@ -123,6 +126,7 @@ namespace Proton
             if (CurrentRoom == null)
             {
                 Debug.LogError("Для поиска объекта нужно зайти в комнату!");
+                return null;
             }
 
             if (CurrentRoom.GameobjectPool.ContainsKey(gameObjectID))
@@ -162,7 +166,7 @@ namespace Proton
 
             loadedObjectProtonView.Init(ProtonEngine.LocalPlayer.ID, true, ID);
 
-            GameObject spawnedObject = MonoBehaviour.Instantiate(loadedGameobject, position, rotation);
+            GameObject spawnedObject = GameObject.Instantiate(loadedGameobject, position, rotation);
 
             CurrentRoom.GameobjectPool[ID] = spawnedObject;
             CurrentRoom.MineGameobjectPool[ID] = spawnedObject;
@@ -212,7 +216,7 @@ namespace Proton
 
             ProtonPacketHandler.SendChatMessage(message);
         }
-        public static void KickPlayer(Player kickedPlayer)
+        public static void KickPlayer(uint ID)
         {
             if (!IsConnected())
             {
@@ -230,7 +234,7 @@ namespace Proton
                 return;
             }
 
-            ProtonPacketHandler.SendKickPlayer(kickedPlayer.ID);
+            ProtonPacketHandler.SendKickPlayer(ID);
         }
         public static void UpdateRoomSendrate()
         {
@@ -305,10 +309,6 @@ namespace Proton
                     }
                     return;
                 }
-            }
-            if (newPlayer.IsHost == true)
-            {
-                Host = newPlayer;
             }
             PlayersList.Add(newPlayer);
         }

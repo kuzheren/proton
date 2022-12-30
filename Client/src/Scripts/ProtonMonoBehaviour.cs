@@ -12,6 +12,7 @@ public class ProtonMonoBehaviour : MonoBehaviour
 {
     private void Start()
     {
+        Application.runInBackground = true;
         ProtonGlobalStates.LastPingTime = System.DateTimeOffset.Now.ToUnixTimeSeconds();
         SceneManager.activeSceneChanged += OnSceneChanged;
         DontDestroyOnLoad(gameObject);
