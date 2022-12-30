@@ -8,6 +8,8 @@
 ###### JoinRoom(string roomName) - пытается зайти в комнату по ее названию
 ###### GetRoomsList() - получает список комнат
 ###### GetPlayerByID(uint ID) - возвращает класс игрока по его ID
+###### GetPlayerByNickname (string nickname) - возвращает класс игрока по его никнейму
+###### GetGameObjectByID(uint gameObjectID) - возвращает объект по его ID
 ###### UpdateStreamZome(Vector3 position) - обновляет на сервере положение камеры, исходя из которого обновляется зона прорисовки
 ###### SendChatMessage(string message) - отправляет сообщение всем игрокам в комнате
 ###### SendRPC(string callbackName, uint targetID/Player target, object[] params) - отправляет RPC указаной цели
