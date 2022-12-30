@@ -15,25 +15,12 @@ console_messages = []
 server = None
 
 def log(text):
-    global server
-    console_messages.append("[Server]: " + str(text))
-    if len(console_messages) > 20:
-        console_messages.pop(0)
-
-    for player in server.users:
-        if player.console == True:
-            player.send_console_message("[Server]: " + str(text))
+    server.add_console_message("[Server]: " + str(text))
 
     print("[Server]:", text)
 
 def logerror(text):
-    console_messages.append("[Server Error]:" + str(text))
-    if len(console_messages) > 20:
-        console_messages.pop(0)
-
-    for player in server.users:
-        if player.console == True:
-            player.send_console_message("[Server Error]: " + str(text))
+    server.add_console_message("[Server Error]: " + str(text))
 
     print("[Server Error]:", text)
 
@@ -285,6 +272,8 @@ class Player:
         self.send_players_info(newroom)
 
     def send_join_room_accepted(self, joinedroom):
+        self.send_players_info(joinedroom)
+
         bs = BitStream()
         bs.write_byte(PACKET_JOIN_ROOM_REQUEST_ACCEPTED)
         bs.write_string8(joinedroom.name)
@@ -295,8 +284,6 @@ class Player:
         bs.write_bool(joinedroom.password != None)
         bs.write_string8("")
         self.send_packet(bs)
-
-        Thread(target=self.send_players_info, args=(joinedroom, )).start()
 
     def send_kick_player(self):
         bs = BitStream()
@@ -506,6 +493,16 @@ class Server:
         self.version = SERVER_VERSION
         self.fingerprint = self.get_fingerprint()
 
+    def add_console_message(self, message):
+        global console_messages
+        console_messages.append(message)
+        if len(console_messages) > 20:
+            console_messages.pop(0)
+
+        for player in self.users:
+            if player.console == True:
+                player.send_console_message(str(message))
+
     def get_fingerprint(self):
         hash_obj = hashlib.new("md5")
 
@@ -705,7 +702,7 @@ class Server:
                 return
 
             target_room.add_player(sender)
-            sender.send_join_room_accepted(target_room)
+            Thread(target=sender.send_join_room_accepted, args=(target_room, )).start()
             log("Player " + sender.nickname + " joined to room " + room_name)
         elif id == PACKET_GET_ROOM_LIST_REQUEST:
             for room in self.rooms:

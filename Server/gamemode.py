@@ -37,9 +37,13 @@ def process_rpc(sender, target_id, rpc_name, args_count, bs, ip):
     return OnReceiveRPC(sender, target_id, rpc_name, args, bs)
 
 def log(text):
+    server.add_console_message("[Gamemode]: " + str(text))
+
     print("[Gamemode]:", text)
 
 def logerror(text):
+    server.add_console_message("[Gamemode Error]: " + str(text))
+
     print("[Gamemode Error]:", text)
 
 ##################################################
