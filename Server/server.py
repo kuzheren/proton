@@ -102,6 +102,7 @@ class Player:
         bs = BitStream()
         bs.write_byte(PACKET_ENCRYPTED_CONNECTION_REQUEST)
         bs.write_float(STREAM_ZONE)
+        bs.write_float(SEND_MULTIPLIER)
         self.send_packet(bs)
         if self.console == False:
             self.encrypted = True
