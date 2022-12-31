@@ -183,13 +183,11 @@ def OnPlayerDisconnected(player, reason):
     pass
 
 def OnRoomCreateRequest(player, room_name, map_name, gamemode_name, max_players, password):
-    Thread(target=HelloNotification, args=(player, )).start()
     return True
 
 def OnRoomJoinRequest(player, room):
     if len(room.players) >= room.max_players and player.console == False:
         return False
-    Thread(target=HelloNotification, args=(player, )).start()
     return True
 
 def OnPlayerLeavedRoom(player, room):
@@ -202,10 +200,6 @@ def OnRoomClosed(room):
     pass
 
 def OnInstantiateObject(player, object):
-    player_objects = GetPlayerGameobjects(player)
-    if len(player_objects) > 5 and player != GetPlayerRoom(player).host:
-        AddChatMessage(player, "Пожалуйста, подождите!")
-        return False
     return True
 
 def OnDestroyObject(player, object):
@@ -243,28 +237,9 @@ def OnPlayerKicked(sender_player, kicked_player):
     return True
 
 def OnReceiveRPC(player, target_id, rpc_name, args, bs):
-    if rpc_name == "RPC_JoinGlobalChat":
-        for message in global_chat_messages:
-            SendRPC(player, "RPC_GlobalMessage", [RpcArgument(message, STRING8)])
-    elif rpc_name == "RPC_GlobalMessage":
-        message = args[0]
-        global_chat_messages.append(message)
-        if len(global_chat_messages) > 10:
-            global_chat_messages.pop(0)
     return True
 
 def OnReceivePacket(player, id, bs, ip):
     return True
 
 ##################################################
-
-global_chat_messages = []
-
-def HelloNotification(player):
-    time.sleep(2)
-    AddChatMessage(player, "Вы вошли в комнату. /help - список команд.")
-
-def SendGlobalMessages(player):
-    time.sleep(1)
-    for message in global_chat_messages:
-        SendRPC(player, "RPC_GlobalMessage", [RpcArgument(message, STRING8)])
