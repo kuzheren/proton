@@ -144,6 +144,7 @@ namespace Proton.Network
                         {
                             ProtonGlobalStates.PeerState = PeerStates.Connected;
                             ProtonEngine.StreamZone = ps.ReadFloat();
+                            ProtonEngine.SendMultiplier = ps.ReadFloat();
                         }
                         else if (packetID == ProtonPacketID.PACKET_INTERNAL_ERROR)
                         {

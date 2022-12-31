@@ -194,6 +194,16 @@ namespace Proton.Packet.Handler
                 }
 
                 GameObject transformedGameobject = ProtonEngine.CurrentRoom.GameobjectPool[gameobjectID];
+
+                if (transformedGameobject == null)
+                {
+                    if (ProtonEngine.CurrentRoom.GameobjectPool.ContainsKey(gameobjectID))
+                    {
+                        ProtonEngine.CurrentRoom.GameobjectPool.Remove(gameobjectID);
+                    }
+                    return;
+                }
+
                 ProtonTransformView transformView = transformedGameobject.GetComponent<ProtonTransformView>();
 
                 transformView.NetworkSync(transformData, UnityEngine.Time.time);
@@ -209,24 +219,19 @@ namespace Proton.Packet.Handler
                 }
 
                 GameObject rigidbody = ProtonEngine.CurrentRoom.GameobjectPool[gameobjectID];
-                ProtonRigidbodyView rigidbodyView = rigidbody.GetComponent<ProtonRigidbodyView>();
 
-                rigidbodyView.NetworkSync(rigidbodyData);
-            }
-            else if (packetID == ProtonPacketID.PACKET_DESYNC_RIGIDBODY)
-            {
-                uint gameobjectID = ps.ReadUInt32();
-                bool freeze = ps.ReadBool();
-
-                if (!ProtonEngine.CurrentRoom.GameobjectPool.ContainsKey(gameobjectID))
+                if (rigidbody == null)
                 {
+                    if (ProtonEngine.CurrentRoom.GameobjectPool.ContainsKey(gameobjectID))
+                    {
+                        ProtonEngine.CurrentRoom.GameobjectPool.Remove(gameobjectID);
+                    }
                     return;
                 }
 
-                GameObject rigidbody = ProtonEngine.CurrentRoom.GameobjectPool[gameobjectID];
                 ProtonRigidbodyView rigidbodyView = rigidbody.GetComponent<ProtonRigidbodyView>();
 
-                rigidbodyView.NetworkDesync(freeze);
+                rigidbodyView.NetworkSync(rigidbodyData);
             }
             else if (packetID == ProtonPacketID.PACKET_CHAT)
             {

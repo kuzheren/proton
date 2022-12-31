@@ -22,6 +22,7 @@ namespace Proton
         public static Player LocalPlayer;
         public static Vector3 LocalCameraPosition;
         public static float StreamZone;
+        public static float SendMultiplier;
         public static bool AutoStreamZoneUpdate = true;
         public static string NickName;
 
