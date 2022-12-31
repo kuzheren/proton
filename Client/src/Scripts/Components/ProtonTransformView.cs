@@ -74,7 +74,7 @@ public class ProtonTransformView : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(1.0f / ProtonEngine.CurrentRoom.SendRate / protonView.Priority);
+            yield return new WaitForSeconds(1.0f / ProtonEngine.CurrentRoom.SendRate / protonView.Priority / ProtonEngine.SendMultiplier);
             if (ForceSync == true | oldPosition != transform.position || oldRotation != transform.rotation)
             {
                 ProtonEngine.SendTransformSync(protonView.ID, transform.position, transform.rotation);

@@ -83,7 +83,7 @@ public class ProtonRigidbodyView : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(1.0f / ProtonEngine.CurrentRoom.SendRate / protonView.Priority);
+            yield return new WaitForSeconds(1.0f / ProtonEngine.CurrentRoom.SendRate / protonView.Priority / ProtonEngine.SendMultiplier);
 
             if (Vector3.Distance(TargetRigidbody.position, ProtonEngine.LocalCameraPosition) > ProtonEngine.StreamZone)
             {
