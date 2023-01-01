@@ -24,7 +24,7 @@ namespace Proton.Network
 
         private static bool Active;
 
-        public static void Connect(string adress, int port, string nickname)
+        public static void Connect(string adress, int port, string nickname, string version)
         {
             if (nickname == "")
             {
@@ -38,7 +38,7 @@ namespace Proton.Network
             Active = true;
 
             Thread encryptionInitializationThread = new Thread(new ParameterizedThreadStart(InitializeEncryption));
-            encryptionInitializationThread.Start(nickname);
+            encryptionInitializationThread.Start(new object[] {nickname, version});
         }
         public static void Disconnect()
         {
@@ -176,13 +176,16 @@ namespace Proton.Network
                 }
             }
         }
-        public static void InitializeEncryption(object nickname)
+        public static void InitializeEncryption(object objectArgumentsArray)
         {
+            object[] args = (object[]) objectArgumentsArray;
+
             ProtonGlobalStates.PeerState = PeerStates.RequestEncryptionKeysExchangePermission;
 
             ProtonStream ps = new ProtonStream();
             ps.WriteByte(ProtonPacketID.ENCRYPTION_START_REQUEST);
-            ps.WriteString8((string) nickname);
+            ps.WriteString8((string) args[0]);
+            ps.WriteString8((string) args[1]);
             SendPacket(ps);
 
             while (ProtonGlobalStates.PeerState != PeerStates.ReceivedEncryptionKey)
