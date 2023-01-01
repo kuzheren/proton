@@ -41,24 +41,26 @@ class BitStream:
             self.write_byte(float_bytes[i])
 
     def write_string8(self, value):
-        string_length = len(value)
+        string_bytes = value.encode("utf-8", "replace")
+
+        string_length = len(string_bytes)
         if string_length > 255:
             string_length = 255
-        self.string_bytes = bytes(value, "cp1251", "replace")
 
         self.write_byte(string_length)
         for i in range(string_length):
-            self.write_byte(self.string_bytes[i])
+            self.write_byte(string_bytes[i])
 
     def write_string16(self, value):
-        string_length = len(value)
+        string_bytes = value.encode("utf-8", "replace")
+
+        string_length = len(string_bytes)
         if string_length > 65535:
             string_length = 65535
-        self.string_bytes = bytes(value, "cp1251", "replace")
 
         self.write_uint16(string_length)
         for i in range(string_length):
-            self.write_byte(self.string_bytes[i])
+            self.write_byte(string_bytes[i])
 
     def write_bool(self, value):
         self.write_byte(1 if value else 0)
@@ -102,14 +104,14 @@ class BitStream:
         string_bytes = []
         for i in range(string_length):
             string_bytes.append(self.read_byte())
-        return bytes(string_bytes).decode("cp1251", "replace")
+        return bytes(string_bytes).decode("utf-8")
 
     def read_string16(self):
         string_length = self.read_uint16()
         string_bytes = []
         for i in range(string_length):
             string_bytes.append(self.read_byte())
-        return bytes(string_bytes).decode("cp1251", "replace")
+        return bytes(string_bytes).decode("utf-8")
 
     def read_bool(self):
         return self.read_byte() == 1
