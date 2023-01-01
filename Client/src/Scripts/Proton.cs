@@ -32,7 +32,7 @@ namespace Proton
             {
                 ProtonHandlerPrefab = Resources.Load("ProtonHandler", typeof(GameObject)) as GameObject;
                 ProtonHandlerObject = GameObject.Instantiate(ProtonHandlerPrefab);
-                ProtonEngine.NickName = nickname;
+                NickName = nickname;
                 ProtonNetwork.Connect(IP, port, nickname, Application.version);
             }
             else

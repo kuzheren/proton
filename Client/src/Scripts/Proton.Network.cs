@@ -26,10 +26,6 @@ namespace Proton.Network
 
         public static void Connect(string adress, int port, string nickname, string version)
         {
-            if (nickname == "")
-            {
-                nickname = "Player_" + UnityEngine.Random.Range(10000, 99999).ToString();
-            }
             IP = new IPEndPoint(IPAddress.Parse(adress), port);
             ProtonPeer = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             ProtonPeer.SendTimeout = 1;
