@@ -5,6 +5,8 @@ import time
 import math
 import traceback
 import hashlib
+import atexit
+import multiprocessing
 
 import gamemode
 from bitstream import *
@@ -604,17 +606,22 @@ class Server:
                 return
 
             nickname = bs.read_string8()
+            version = bs.read_string8()
             console = False
             try:
                 console = bs.read_bool()
             except:
                 pass
 
+            if version != GAME_VERSION:
+                error((9, f"Вы используете устаревшую версию игры {version}. Актуальная версия: {GAME_VERSION}"))
+                return
+
             if len(nickname) < 3 or len(nickname) > 30:
                 error(ERROR_BAD_NICKNAME)
                 return
 
-            if "console" in nickname and console == False:
+            if "console" in nickname.lower() and console == False:
                 error(ERROR_BAD_NICKNAME)
                 return
 
@@ -913,3 +920,4 @@ if __name__ == "__main__":
 
     server = Server()
     server.start(IP, PORT)
+    atexit.register(server.shotdown_handler)
