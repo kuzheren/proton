@@ -643,6 +643,9 @@ class Server:
                 return
             
             Thread(target=sender.send_allow_connection).start()
+            
+            if sender.console == False:
+                return
 
             for message in console_messages:
                 sender.send_console_message(message)
