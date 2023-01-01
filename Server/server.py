@@ -5,8 +5,6 @@ import time
 import math
 import traceback
 import hashlib
-import atexit
-import multiprocessing
 
 import gamemode
 from bitstream import *
@@ -920,4 +918,3 @@ if __name__ == "__main__":
 
     server = Server()
     server.start(IP, PORT)
-    atexit.register(server.shotdown_handler)
