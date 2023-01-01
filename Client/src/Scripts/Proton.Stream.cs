@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Text;
+using UnityEngine;
 
 namespace Proton.Stream
 {
@@ -61,8 +62,8 @@ namespace Proton.Stream
         }
         public void WriteString8(string value)
         {
-            byte length = (byte) value.Length;
-            byte[] stringBytes = Encoding.GetEncoding("Windows-1251").GetBytes(value);
+            byte[] stringBytes = Encoding.UTF8.GetBytes(value);
+            byte length = (byte) stringBytes.Length;
 
             WriteByte(length);
             for (int i = 0; i < length; i++)
@@ -72,8 +73,8 @@ namespace Proton.Stream
         }
         public void WriteString16(string value)
         {
-            ushort length = (ushort) value.Length;
-            byte[] stringBytes = Encoding.GetEncoding("Windows-1251").GetBytes(value);
+            byte[] stringBytes = Encoding.UTF8.GetBytes(value);
+            ushort length = (ushort) stringBytes.Length;
 
             WriteUInt16(length);
             for (int i = 0; i < length; i++)
@@ -85,13 +86,13 @@ namespace Proton.Stream
         {
             WriteByte((byte)  (value ? 1 : 0));
         }
-        public void WriteVector3(UnityEngine.Vector3 value)
+        public void WriteVector3(Vector3 value)
         {
             WriteFloat(value.x);
             WriteFloat(value.y);
             WriteFloat(value.z);
         }
-        public void WriteQuaternion(UnityEngine.Quaternion value)
+        public void WriteQuaternion(Quaternion value)
         {
             WriteFloat(value[0]);
             WriteFloat(value[1]);
@@ -159,7 +160,7 @@ namespace Proton.Stream
                 stringBytes.Add(ReadByte());
             }
 
-            return Encoding.GetEncoding("Windows-1251").GetString(stringBytes.ToArray());
+            return Encoding.UTF8.GetString(stringBytes.ToArray());
         }
         public string ReadString16()
         {
@@ -171,19 +172,19 @@ namespace Proton.Stream
                 stringBytes.Add(ReadByte());
             }
     
-            return Encoding.GetEncoding("Windows-1251").GetString(stringBytes.ToArray());
+            return Encoding.UTF8.GetString(stringBytes.ToArray());
         }
         public bool ReadBool()
         {
             return ReadByte() == 1;
         }
-        public UnityEngine.Vector3 ReadVector3()
+        public Vector3 ReadVector3()
         {
-            return new UnityEngine.Vector3(ReadFloat(), ReadFloat(), ReadFloat());
+            return new Vector3(ReadFloat(), ReadFloat(), ReadFloat());
         }
-        public UnityEngine.Quaternion ReadQuaternion()
+        public Quaternion ReadQuaternion()
         {
-            UnityEngine.Quaternion quaternion = new UnityEngine.Quaternion();
+            Quaternion quaternion = new Quaternion();
             quaternion[0] = ReadFloat();
             quaternion[1] = ReadFloat();
             quaternion[2] = ReadFloat();

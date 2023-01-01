@@ -39,7 +39,7 @@ namespace Proton.Packet.Handler
             }
             catch (Exception error)
             {
-                throw;
+                Debug.LogError(error);
             }
         }
         public static void ProcessPacket(byte packetID, ProtonStream ps)
@@ -103,19 +103,6 @@ namespace Proton.Packet.Handler
                         }
                     }
                 }
-
-                //if (newPlayer.IsHost)
-                //{
-                //    ProtonEngine.CurrentRoom.Host = newPlayer;
-                //}
-                //if (isPlayerListInitialization == false && newPlayer != ProtonEngine.LocalPlayer)
-                //{
-                //    ProtonEngine.InvokeCallback("OnPlayerJoined", new object[] {newPlayer});
-                //}
-                //if (ProtonEngine.CurrentRoom != null)
-                //{
-                //    ProtonEngine.CurrentRoom.AddOrUpdatePlayer(newPlayer);
-                //}
             }
             else if (packetID == ProtonPacketID.PACKET_REMOVE_PLAYER_CLASS)
             {
@@ -134,7 +121,7 @@ namespace Proton.Packet.Handler
             {
                 InstantiatePacket newGameobjectData = (InstantiatePacket) ConvertBitStreamToStruct(ps, typeof(InstantiatePacket));
 
-                string gameobjectName = newGameobjectData.GameobjectName;
+                string gameobjectName = newGameobjectData.GameobjectName.ToString();
                 Vector3 gameobjectPosition = newGameobjectData.Position;
                 Quaternion gameobjectRotation = newGameobjectData.Rotation;
                 uint gameobjectID = newGameobjectData.ID;
