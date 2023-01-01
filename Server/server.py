@@ -639,6 +639,9 @@ class Server:
 
             log("New player connected to server: " + newuser.nickname)
         elif id == PACKET_ENCRYPTED_CONNECTION_REQUEST:
+            if sender == None:
+                return
+            
             Thread(target=sender.send_allow_connection).start()
 
             for message in console_messages:
