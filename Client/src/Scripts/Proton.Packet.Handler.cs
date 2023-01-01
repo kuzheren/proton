@@ -15,24 +15,31 @@ namespace Proton.Packet.Handler
     {
         public static void OnReceivePacket(ProtonStream ps)
         {
-            if (ProtonGlobalStates.ConnectionEncrypted == true)
+            try
             {
-                byte dataType = ps.ReadByte();
-                if (dataType == ProtonPacketID.PACKET)
+                if (ProtonGlobalStates.ConnectionEncrypted == true)
                 {
-                    byte packetID = ps.ReadByte();
-                    ProcessPacket(packetID, ps);
+                    byte dataType = ps.ReadByte();
+                    if (dataType == ProtonPacketID.PACKET)
+                    {
+                        byte packetID = ps.ReadByte();
+                        ProcessPacket(packetID, ps);
+                    }
+                    else if (dataType == ProtonPacketID.RPC)
+                    {
+                        uint senderID = ps.ReadUInt32();
+                        string RPCName = ps.ReadString8();
+                        ProcessRPC(RPCName, senderID, ps);
+                    }
+                    else if (dataType == ProtonPacketID.PING)
+                    {
+                        SendPongPacket();
+                    } 
                 }
-                else if (dataType == ProtonPacketID.RPC)
-                {
-                    uint senderID = ps.ReadUInt32();
-                    string RPCName = ps.ReadString8();
-                    ProcessRPC(RPCName, senderID, ps);
-                }
-                else if (dataType == ProtonPacketID.PING)
-                {
-                    SendPongPacket();
-                } 
+            }
+            catch (Exception error)
+            {
+                throw;
             }
         }
         public static void ProcessPacket(byte packetID, ProtonStream ps)
@@ -206,6 +213,11 @@ namespace Proton.Packet.Handler
 
                 ProtonTransformView transformView = transformedGameobject.GetComponent<ProtonTransformView>();
 
+                if (transformView == null)
+                {
+                    return;
+                }
+
                 transformView.NetworkSync(transformData, UnityEngine.Time.time);
             }
             else if (packetID == ProtonPacketID.PACKET_RIGIDBODY_SYNC)
@@ -230,6 +242,11 @@ namespace Proton.Packet.Handler
                 }
 
                 ProtonRigidbodyView rigidbodyView = rigidbody.GetComponent<ProtonRigidbodyView>();
+
+                if (rigidbodyView == null)
+                {
+                    return;
+                }
 
                 rigidbodyView.NetworkSync(rigidbodyData);
             }
