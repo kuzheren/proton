@@ -190,7 +190,7 @@ namespace Proton
 
             if (destroyedGameobject == null)
             {
-                Debug.LogError("Вы пытаетесь удалить несуществующий объект!");
+                Debug.LogWarning("Вы пытаетесь удалить несуществующий объект!");
                 return;
             }
 

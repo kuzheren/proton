@@ -273,6 +273,27 @@ namespace Proton.Packet.Handler
 
                 ProtonEngine.InvokeCallback("OnTeleportGameObject", new object[] {ProtonEngine.CurrentRoom.GameobjectPool[gameobjectID], position});
             }
+            else if (packetID == ProtonPacketID.PACKET_INITIALIZE_PRIORITY)
+            {
+                byte dataLength = ps.ReadByte();
+                for (int i = 0; i < (int) dataLength; i++)
+                {
+                    string gameobjectName = ps.ReadString8();
+                    float priority = ps.ReadFloat();
+
+                    GameObject instantiatePrefab = (GameObject) Resources.Load(gameobjectName, typeof(GameObject));
+                    if (instantiatePrefab == null)
+                    {
+                        return;
+                    }
+                    if (instantiatePrefab.GetComponent<ProtonView>() == null)
+                    {
+                        return;
+                    }
+
+                    instantiatePrefab.GetComponent<ProtonView>().Priority = priority;
+                }
+            }
         }
         public static void ProcessRPC(string RPCName, uint senderID, ProtonStream ps)
         {
