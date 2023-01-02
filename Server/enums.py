@@ -31,6 +31,7 @@ PACKET_DESYNC_RIGIDBODY =                  30
 PACKET_KICK_PLAYER =                       31
 PACKET_CONSOLE_MESSAGE =                   32
 PACKET_INITIALIZE_PRIORITY =               33
+PACKET_CHECK_EXISTANCE =                   34
 
 #rpc targets
 TARGET_ROOM =                              1

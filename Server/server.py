@@ -833,14 +833,14 @@ class Server:
             gameobject.rotation = rotation
 
             sender.room.send_rigidbody_sync(sender, object_id, mass, drag, angular_drag, gravity, kinematic, position, velocity, angular_velocity, rotation)
-        if id == PACKET_UPDATE_STREAM_ZONE:
+        elif id == PACKET_UPDATE_STREAM_ZONE:
             camera_position = [bs.read_float(), bs.read_float(), bs.read_float()]
 
             if gamemode.OnUpdateStreamZone(sender, camera_position) == False:
                 return
 
             sender.position = camera_position
-        if id == PACKET_CHAT:
+        elif id == PACKET_CHAT:
             if sender == None:
                 return
 
@@ -862,7 +862,7 @@ class Server:
                 return
 
             sender.room.send_chat_message(sender.nickname + ": " + message)
-        if id == PACKET_KICK_PLAYER:
+        elif id == PACKET_KICK_PLAYER:
             kicked_player_id = bs.read_uint32()
 
             kicked_player = self.get_player_by_id(kicked_player_id)
@@ -874,6 +874,19 @@ class Server:
                 return
 
             sender.room.kick_player(kicked_player)
+        elif id == PACKET_CHECK_EXISTANCE:
+            if sender == None:
+                return
+
+            gameobject_id = bs.read_uint32()
+            gameobject = sender.room.get_gameobject_by_id(gameobject_id)
+
+            if gameobject == None:
+                object = GameObject()
+                object.id = gameobject_id
+
+                sender.send_destroy_gameobject(object)
+                return
 
     def process_rpc(self, bs, ip):
         sender = self.get_player_by_ip(ip)
