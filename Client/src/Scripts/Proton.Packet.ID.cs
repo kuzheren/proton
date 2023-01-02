@@ -35,6 +35,8 @@ namespace Proton.Packet.ID
         public static readonly byte PACKET_UPDATE_STREAM_ZONE =                29;
         public static readonly byte PACKET_DESYNC_RIGIDBODY =                  30;
         public static readonly byte PACKET_KICK_PLAYER =                       31;
+        public static readonly byte PACKET_INITIALIZE_PRIORITY =               33;
+        public static readonly byte PACKET_CHECK_EXISTANCE =                   34;
     }
     public static class Error
     {

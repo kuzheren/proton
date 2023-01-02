@@ -274,6 +274,10 @@ namespace Proton
         {
             return !(ProtonGlobalStates.PeerState == PeerStates.Disconnected || ProtonGlobalStates.PeerState == PeerStates.RequestEncryptionKeysExchangePermission || ProtonGlobalStates.PeerState == PeerStates.ReceivedEncryptionKey || ProtonGlobalStates.PeerState == PeerStates.RequestSecureConnection);
         }
+        public static void CheckGameobjectExistance(uint ID)
+        {
+            ProtonPacketHandler.SendCheckGameobjectExistance(ID);
+        }
     }
 
     public class Room : RoomSettings

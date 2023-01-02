@@ -504,6 +504,13 @@ namespace Proton.Packet.Handler
             ps.WriteUInt32(playerID);
             ProtonNetwork.SendPacket(ps);
         }
+        public static void SendCheckGameobjectExistance(uint gameobjectID)
+        {
+            ProtonStream ps = new ProtonStream();
+            ps.WriteByte(ProtonPacketID.PACKET_CHECK_EXISTANCE);
+            ps.WriteUInt32(gameobjectID);
+            ProtonNetwork.SendPacket(ps);
+        }
 
         public static void SendTransformSync(uint objectID, Vector3 position, Quaternion rotation)
         {
