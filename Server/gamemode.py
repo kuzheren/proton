@@ -1,4 +1,5 @@
 import time
+from typing_extensions import ParamSpecArgs
 import psutil
 import os
 import math
@@ -176,7 +177,7 @@ def OnGamemodeStarted():
     log(f"Gamemode started. Server version: {server.version}")
 
 def OnPlayerConnected(player):
-    pass
+    return True
 
 def OnPlayerDisconnected(player, reason):
     pass
@@ -217,20 +218,7 @@ def OnChatMessage(player, message):
     return True
 
 def OnChatCommand(player, cmd):
-    if cmd == "help":
-        AddChatMessage(player, "/help, /status")
-    elif cmd == "status":
-        process = psutil.Process(os.getpid())
-        memory_info = process.memory_info()
-        memory_usage_in_bytes = memory_info.rss
-        memory_usage_in_megabytes = memory_usage_in_bytes / 1024 / 1024
-        cpu = process.cpu_percent()
-        ram = round(memory_usage_in_megabytes, 2)
-
-        status_string = f"Server Status: version {server.version}, CPU: {cpu}%, RAM: {ram} MB, rooms: {len(server.rooms)}, players: {len(server.users)}, MD5 fingerprint: {server.fingerprint}"
-        AddChatMessage(player, status_string)
-    else:
-        AddChatMessage(player, "Unknown command. Type /help for a list of commands")
+    ParamSpecArgs
 
 def OnPlayerKicked(sender_player, kicked_player):
     return True

@@ -286,6 +286,15 @@ class Player:
         bs.write_string8("")
         self.send_packet(bs)
 
+    def send_priority_data(self):
+        bs = BitStream()
+        bs.write_byte(PACKET_INITIALIZE_PRIORITY)
+        bs.write_byte(len(PRIORITY_TABLE))
+        for key in PRIORITY_TABLE:
+            bs.write_string8(key)
+            bs.write_float(PRIORITY_TABLE[key])
+        self.send_packet(bs)
+
     def send_kick_player(self):
         bs = BitStream()
         bs.write_byte(PACKET_KICK_PLAYER)
@@ -635,15 +644,18 @@ class Server:
             Thread(target=newuser.ping).start()
             self.users.append(newuser)
 
-            gamemode.OnPlayerConnected(newuser)
-
             log("New player connected to server: " + newuser.nickname)
+
+            if gamemode.OnPlayerConnected(newuser) == False:
+                self.remove_udp_user(newuser, "gamemode connection reject")
+                return
         elif id == PACKET_ENCRYPTED_CONNECTION_REQUEST:
             if sender == None:
                 return
-            
+
             Thread(target=sender.send_allow_connection).start()
-            
+            Thread(target=sender.send_priority_data).start()
+
             if sender.console == False:
                 return
 

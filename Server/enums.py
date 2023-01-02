@@ -30,6 +30,7 @@ PACKET_UPDATE_STREAM_ZONE =                29
 PACKET_DESYNC_RIGIDBODY =                  30
 PACKET_KICK_PLAYER =                       31
 PACKET_CONSOLE_MESSAGE =                   32
+PACKET_INITIALIZE_PRIORITY =               33
 
 #rpc targets
 TARGET_ROOM =                              1
@@ -54,6 +55,8 @@ ERROR_NICKNAME_TAKEN =                     (2, "The player with your nickname is
 ERROR_FULL_ROOM =                          (3, "The room you are trying to enter is filled with")
 ERROR_ROOM_NOT_EXIST =                     (4, "The room you are trying to enter does not exist")
 ERROR_MAX_PLAYER_PER_IP =                  (5, "Max players per IP")
-ERROR_BAD_NICKNAME =                       (6, "Bad nickname. Allowed characters: 1-9, A-Z, A-Я")
+ERROR_BAD_NICKNAME =                       (6, "Bad nickname. The length of the nickname should be 3-30 characters.")
 ERROR_ROOM_WRONG_PASSWORD =                (7, "Wrong room password")
 ERROR_ROOM_NAME_TAKEN =                    (8, "The name of the room to be created is occupied")
+ERROR_INCORRECT_VERSION =                  (9, "You are using an outdated version of the game. Update to connect.")
+ERROR_SERVER_RESTARTED =                   (10, "Server restarted...")
